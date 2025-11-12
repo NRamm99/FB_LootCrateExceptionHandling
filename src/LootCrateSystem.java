@@ -32,14 +32,14 @@ public class LootCrateSystem {
 
     public Player getPlayerByUsername(String username) throws PlayerNotFoundException {
         return players.stream()
-                .filter(player -> player.getUsername().equals(username))
+                .filter(player -> player.getUsername().equalsIgnoreCase(username))
                 .findFirst()
                 .orElseThrow(() -> new PlayerNotFoundException(username + " not found"));
     }
 
     public LootCrate getLootCrateById(String crateId) throws LootCrateNotFoundException {
         return crates.stream()
-                .filter(crate -> crate.getId().equals(crateId))
+                .filter(crate -> crate.getId().equalsIgnoreCase(crateId))
                 .findFirst()
                 .orElseThrow(() -> new LootCrateNotFoundException(crateId + " not found"));
     }

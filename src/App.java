@@ -59,17 +59,20 @@ public class App {
 
     private static void promptOpenCrate()
             throws PlayerNotFoundException, LootCrateNotFoundException, NotEnoughCreditsException {
+        clearConsole();
         lootCrateSystem.printAllPlayers();
         System.out.println("--------------------------------");
         System.out.println("Enter the username of the player who will open the crate: ");
         String username = input.nextLine().trim();
         Player player = lootCrateSystem.getPlayerByUsername(username);
+        clearConsole();
         lootCrateSystem.printAllCrates();
         System.out.println("--------------------------------");
-        System.out.println("Enter the id of the crate to open: ");
+        System.out.println("Enter the name of the crate to open: ");
         String crateId = input.nextLine().trim();
         LootCrate crate = lootCrateSystem.getLootCrateById(crateId);
         lootCrateSystem.openCrate(player, crate);
+        waitForUser();
     }
 
     private static void clearConsole() {
@@ -88,5 +91,10 @@ public class App {
                 System.out.println("Invalid input. Please enter a whole number.");
             }
         }
+    }
+
+    public static void waitForUser() {
+        System.out.println("\nPress enter to continue...");
+        input.nextLine();
     }
 }
