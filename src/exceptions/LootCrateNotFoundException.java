@@ -1,4 +1,4 @@
-package crate;
+package exceptions;
 
 public class LootCrateNotFoundException extends Exception {
     public LootCrateNotFoundException(String message) {

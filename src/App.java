@@ -1,10 +1,12 @@
 import java.util.Scanner;
 
-import crate.LootCrate;
-import crate.LootCrateNotFoundException;
-import crate.NotEnoughCreditsException;
-import player.Player;
-import player.PlayerNotFoundException;
+import exceptions.ItemNotFoundException;
+import exceptions.LootCrateNotFoundException;
+import exceptions.NegativeAmountException;
+import exceptions.NotEnoughCreditsException;
+import exceptions.PlayerNotFoundException;
+import models.LootCrate;
+import models.Player;
 
 public class App {
     private static final Scanner input = new Scanner(System.in);
@@ -12,35 +14,71 @@ public class App {
 
     public static void main(String[] args) throws Exception {
 
-        addDefaultPlayers();
-        addDefaultCrates();
+        lootCrateSystem.addDefaultPlayers();
+        lootCrateSystem.addDefaultCrates();
+        runTests(lootCrateSystem);
 
         while (true) {
             promptMainMenu();
         }
     }
 
-    private static void addDefaultCrates() {
-        lootCrateSystem.addCrate(new LootCrate("Normal", 100));
-        lootCrateSystem.addCrate(new LootCrate("Rare", 200));
-        lootCrateSystem.addCrate(new LootCrate("Epic", 300));
-    }
+    private static void runTests(LootCrateSystem lootCrateSystem)
+            throws PlayerNotFoundException, LootCrateNotFoundException, NotEnoughCreditsException {
+        clearConsole();
+        System.out.println("Running tests...");
+        System.out.println("--------------------------------");
 
-    private static void addDefaultPlayers() {
-        lootCrateSystem.addPlayer(new Player("John", 100));
-        lootCrateSystem.addPlayer(new Player("Jane", 200));
-        lootCrateSystem.addPlayer(new Player("Jim", 300));
+        System.out.println("Testing openCrate...");
+        try {
+            lootCrateSystem.openCrate(lootCrateSystem.getPlayerByUsername("John"),
+                    lootCrateSystem.getLootCrateById("Normal"));
+        } catch (NotEnoughCreditsException e) {
+            System.out.println(e.getMessage());
+        }
+
+        System.out.println("--------------------------------");
+        System.out.println("Testing openCrate with not enough credits...");
+        try {
+            lootCrateSystem.openCrate(lootCrateSystem.getPlayerByUsername("John"),
+                    lootCrateSystem.getLootCrateById("Normal"));
+        } catch (NotEnoughCreditsException e) {
+            System.out.println(e.getMessage());
+        }
+
+        System.out.println("--------------------------------");
+        System.out.println("Testing addCredits with negative amount...");
+        try {
+            lootCrateSystem.getPlayerByUsername("John").addCredits(-100);
+        } catch (NegativeAmountException e) {
+            System.out.println(e.getMessage());
+        }
+
+        System.out.println("--------------------------------");
+        System.out.println("Testing openCrate with not found player...");
+        try {
+            lootCrateSystem.openCrate(lootCrateSystem.getPlayerByUsername("this is not a player"),
+                    lootCrateSystem.getLootCrateById("Normal"));
+        } catch (PlayerNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+
+        System.out.println("--------------------------------");
+        waitForUser();
     }
 
     private static void promptMainMenu()
-            throws PlayerNotFoundException, LootCrateNotFoundException, NotEnoughCreditsException {
+            throws PlayerNotFoundException, LootCrateNotFoundException, NotEnoughCreditsException,
+            ItemNotFoundException {
         clearConsole();
         System.out.println("Welcome to the Loot Crate System");
         System.out.println("--------------------------------");
         System.out.println("""
                 Select an option:
                 1. Open Loot Crate
-                2. Exit
+                2. View Inventory
+                3. Sell player inventory
+                4. Exit
                 """);
         int choice = validateInt("Select an option");
         switch (choice) {
@@ -48,13 +86,48 @@ public class App {
                 promptOpenCrate();
                 break;
             case 2:
+                printAllPlayerInventory();
+                waitForUser();
+                break;
+            case 3:
+                promptSellInventory();
+                break;
+            case 4:
                 System.exit(0);
                 break;
             default:
                 System.out.println("Invalid choice");
                 break;
         }
+    }
 
+    private static void promptSellInventory() throws PlayerNotFoundException {
+        clearConsole();
+        printAllPlayerInventory();
+        String username = validateString("Enter the username of the player who will sell their inventory");
+        Player player = null;
+        try {
+            player = lootCrateSystem.getPlayerByUsername(username);
+        } catch (PlayerNotFoundException e) {
+            System.out.println(e.getMessage());
+            waitForUser();
+            return;
+        }
+
+        int inventoryValue = player.calculateInventoryValue();
+        player.addCredits(inventoryValue);
+        player.remveAllItems();
+        System.out.println("inventory sold for " + inventoryValue + " credits");
+        waitForUser();
+    }
+
+    private static void printAllPlayerInventory() {
+        clearConsole();
+        System.out.println("--------------------------------");
+        for (Player player : lootCrateSystem.getPlayers()) {
+            lootCrateSystem.printPlayerWithInventory(player);
+            System.out.println("--------------------------------");
+        }
     }
 
     private static void promptOpenCrate()
@@ -62,15 +135,27 @@ public class App {
         clearConsole();
         lootCrateSystem.printAllPlayers();
         System.out.println("--------------------------------");
-        System.out.println("Enter the username of the player who will open the crate: ");
-        String username = input.nextLine().trim();
-        Player player = lootCrateSystem.getPlayerByUsername(username);
+        String username = validateString("Enter the username of the player who will open the crate");
+        Player player = null;
+        try {
+            player = lootCrateSystem.getPlayerByUsername(username);
+        } catch (PlayerNotFoundException e) {
+            System.out.println(e.getMessage());
+            waitForUser();
+            return;
+        }
         clearConsole();
         lootCrateSystem.printAllCrates();
         System.out.println("--------------------------------");
-        System.out.println("Enter the name of the crate to open: ");
-        String crateId = input.nextLine().trim();
-        LootCrate crate = lootCrateSystem.getLootCrateById(crateId);
+        String crateId = validateString("Enter the name of the crate to open");
+        LootCrate crate = null;
+        try {
+            crate = lootCrateSystem.getLootCrateById(crateId);
+        } catch (LootCrateNotFoundException e) {
+            System.out.println(e.getMessage());
+            waitForUser();
+            return;
+        }
         lootCrateSystem.openCrate(player, crate);
         waitForUser();
     }
@@ -96,5 +181,17 @@ public class App {
     public static void waitForUser() {
         System.out.println("\nPress enter to continue...");
         input.nextLine();
+    }
+
+    public static String validateString(String message) {
+        while (true) {
+            System.out.print(message + ": ");
+            String string = input.nextLine().trim();
+            if (string.matches("^[A-Za-zÆØÅæøå\\s]+$")) {
+                return string;
+            } else {
+                System.out.println("Invalid string. Please enter a valid string.");
+            }
+        }
     }
 }
