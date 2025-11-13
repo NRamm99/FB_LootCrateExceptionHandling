@@ -46,15 +46,16 @@ public class Player {
     }
 
     public void addItem(Item item, int amount) {
-        if (!items.isEmpty()) {
-            items.stream()
+            Item existingItem = items.stream()
                     .filter(i -> i.getName().equalsIgnoreCase(item.getName()))
                     .findFirst()
-                    .ifPresent(i -> i.addQuantity(amount));
-        } else {
-            item.setQuantity(amount);
-            items.add(item);
-        }
+                    .orElse(null);
+            if (existingItem != null) {
+                existingItem.addQuantity(amount);
+            } else {
+                item.setQuantity(amount);
+                items.add(item);
+            }
     }
 
     @Override
