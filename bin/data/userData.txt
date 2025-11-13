@@ -1,0 +1,3 @@
+John,0,Wooden Shield,2,50,Adventure Hat,4,30
+Jane,500
+Jim,1000

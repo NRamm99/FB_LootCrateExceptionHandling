@@ -37,4 +37,12 @@ public class LootCrate {
         return items.get(random.nextInt(items.size()));
     }
 
+    public List<Item> getItems() {
+        return items;
+    }
+
+    public void setItems(List<Item> tempItems) {
+        this.items = tempItems;
+    }
+
 }

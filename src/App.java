@@ -1,26 +1,29 @@
 import java.util.Scanner;
 
-import exceptions.ItemNotFoundException;
 import exceptions.LootCrateNotFoundException;
 import exceptions.NegativeAmountException;
 import exceptions.NotEnoughCreditsException;
 import exceptions.PlayerNotFoundException;
 import models.LootCrate;
 import models.Player;
+import utils.FileHandler;
 
 public class App {
     private static final Scanner input = new Scanner(System.in);
-    private static LootCrateSystem lootCrateSystem = new LootCrateSystem();
+    private static LootCrateSystem lootCrateSystem = new LootCrateSystem(FileHandler.loadUserData(),
+            FileHandler.loadCratesData());
 
     public static void main(String[] args) throws Exception {
-
-        lootCrateSystem.addDefaultPlayers();
-        lootCrateSystem.addDefaultCrates();
         runTests(lootCrateSystem);
 
         while (true) {
             promptMainMenu();
         }
+    }
+
+    private static void saveData() {
+        FileHandler.saveUserData(lootCrateSystem.getPlayers());
+        FileHandler.saveCratesData(lootCrateSystem.getCrates());
     }
 
     private static void runTests(LootCrateSystem lootCrateSystem)
@@ -68,8 +71,7 @@ public class App {
     }
 
     private static void promptMainMenu()
-            throws PlayerNotFoundException, LootCrateNotFoundException, NotEnoughCreditsException,
-            ItemNotFoundException {
+            throws PlayerNotFoundException, LootCrateNotFoundException, NotEnoughCreditsException {
         clearConsole();
         System.out.println("Welcome to the Loot Crate System");
         System.out.println("--------------------------------");
@@ -93,6 +95,7 @@ public class App {
                 promptSellInventory();
                 break;
             case 4:
+                saveData();
                 System.exit(0);
                 break;
             default:

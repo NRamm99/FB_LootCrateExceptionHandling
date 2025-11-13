@@ -17,6 +17,12 @@ public class Player {
         this.items = new ArrayList<>();
     }
 
+    public Player(String username, int credits, List<Item> items) {
+        this.username = username;
+        this.credits = credits;
+        this.items = items;
+    }
+
     public String getUsername() {
         return username;
     }
@@ -46,16 +52,16 @@ public class Player {
     }
 
     public void addItem(Item item, int amount) {
-            Item existingItem = items.stream()
-                    .filter(i -> i.getName().equalsIgnoreCase(item.getName()))
-                    .findFirst()
-                    .orElse(null);
-            if (existingItem != null) {
-                existingItem.addQuantity(amount);
-            } else {
-                item.setQuantity(amount);
-                items.add(item);
-            }
+        Item existingItem = items.stream()
+                .filter(i -> i.getName().equalsIgnoreCase(item.getName()))
+                .findFirst()
+                .orElse(null);
+        if (existingItem != null) {
+            existingItem.addQuantity(amount);
+        } else {
+            item.setQuantity(amount);
+            items.add(item);
+        }
     }
 
     @Override
@@ -75,5 +81,9 @@ public class Player {
 
     public void remveAllItems() {
         items.clear();
+    }
+
+    public void setItems(List<Item> tempItems) {
+        this.items = tempItems;
     }
 }

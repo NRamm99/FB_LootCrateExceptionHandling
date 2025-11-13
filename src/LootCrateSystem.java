@@ -19,6 +19,11 @@ public class LootCrateSystem {
         this.crates = new ArrayList<>();
     }
 
+    public LootCrateSystem(List<Player> players) {
+        this.players = players;
+        this.crates = new ArrayList<>();
+    }
+
     public LootCrateSystem(List<Player> players, List<LootCrate> crates) {
         this.players = players;
         this.crates = crates;
@@ -50,7 +55,8 @@ public class LootCrateSystem {
         Item item = crate.getRandomItem();
         int amount = random.nextInt(1, 3);
         player.openCrate(crate, item, amount);
-        System.out.println(player.getUsername() + " opened " + crate.getId() + " and received " + item.getName() + " x " + amount);
+        System.out.println(
+                player.getUsername() + " opened " + crate.getId() + " and received " + item.getName() + " x " + amount);
     }
 
     public void printAllPlayers() {
@@ -91,8 +97,20 @@ public class LootCrateSystem {
         addPlayer(new Player("Jim", 300));
     }
 
-    public Player[] getPlayers() {
-        return players.toArray(new Player[players.size()]);
+    public List<Player> getPlayers() {
+        return players;
+    }
+
+    public List<LootCrate> getCrates() {
+        return crates;
+    }
+
+    public void setPlayers(List<Player> userData) {
+        this.players = userData;
+    }
+
+    public void setCrates(List<LootCrate> cratesData) {
+        this.crates = cratesData;
     }
 
 }

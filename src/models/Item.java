@@ -31,6 +31,10 @@ public class Item {
         this.quantity = nextInt;
     }
 
+    public String getData() {
+        return name + "," + quantity + "," + value;
+    }
+
     @Override
     public String toString() {
         return " - " + name + " x " + quantity + " (value: " + value * quantity + ")";
