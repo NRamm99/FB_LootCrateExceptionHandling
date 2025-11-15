@@ -117,7 +117,7 @@ public class FileHandler {
         int crateCount = getLineCount(CRATES_FILE);
 
         if (!file.exists()) {
-            System.out.println("User data file not found, creating new file");
+            System.out.println("Crates data file not found, creating new file");
             return crates;
         }
 
