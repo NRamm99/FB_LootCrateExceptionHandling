@@ -63,29 +63,13 @@ public class LootCrateSystem {
         crates.forEach(System.out::println);
     }
 
-    public void addDefaultCrates() throws LootCrateNotFoundException {
-        addCrate(new LootCrate("Normal", 100));
-        addCrate(new LootCrate("Rare", 200));
-        addCrate(new LootCrate("Epic", 300));
+    public void resetTestData() {
+        players.clear();
 
-        getLootCrateById("Normal").addItem(new Item("Wooden Shield", 1, 50));
-        getLootCrateById("Normal").addItem(new Item("Adventure Hat", 1, 30));
-        getLootCrateById("Normal").addItem(new Item("Health Potion", 1, 20));
-
-        getLootCrateById("Rare").addItem(new Item("Silver Sword", 1, 200));
-        getLootCrateById("Rare").addItem(new Item("Magic Compass", 1, 150));
-        getLootCrateById("Rare").addItem(new Item("Enchanted Cloak", 1, 180));
-
-        getLootCrateById("Epic").addItem(new Item("Dragon Slayer Axe", 1, 500));
-        getLootCrateById("Epic").addItem(new Item("Phoenix Feather", 1, 450));
-        getLootCrateById("Epic").addItem(new Item("Elder Spellbook", 1, 550));
-
-    }
-
-    public void addDefaultPlayers() {
         addPlayer(new Player("John", 100));
         addPlayer(new Player("Jane", 200));
         addPlayer(new Player("Jim", 300));
+
     }
 
     public List<Player> getPlayers() {

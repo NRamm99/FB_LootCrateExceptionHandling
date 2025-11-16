@@ -13,8 +13,7 @@ public class App {
     private static LootCrateSystem lootCrateSystem = new LootCrateSystem(FileHandler.loadUserData(),
             FileHandler.loadCratesData());
 
-    public static void main(String[] args) throws Exception {
-        runTests(lootCrateSystem);
+    public static void main(String[] args) throws PlayerNotFoundException, LootCrateNotFoundException, NotEnoughCreditsException {
 
         while (true) {
             promptMainMenu();
@@ -28,6 +27,7 @@ public class App {
 
     private static void runTests(LootCrateSystem lootCrateSystem)
             throws PlayerNotFoundException, LootCrateNotFoundException, NotEnoughCreditsException {
+        lootCrateSystem.resetTestData();
         clearConsole();
         System.out.println("Running tests...");
         System.out.println("--------------------------------");
@@ -83,7 +83,8 @@ public class App {
                 1. Open Loot Crate
                 2. View Inventory
                 3. Sell player inventory
-                4. Exit
+                4. Run tests (Will reset all data)
+                5. Exit
                 """);
         int choice = validateInt("Select an option");
         switch (choice) {
@@ -98,6 +99,9 @@ public class App {
                 promptSellInventory();
                 break;
             case 4:
+                runTests(lootCrateSystem);
+                break;
+            case 5:
                 saveData();
                 System.exit(0);
                 break;
@@ -122,7 +126,7 @@ public class App {
 
         int inventoryValue = player.calculateInventoryValue();
         player.addCredits(inventoryValue);
-        player.remveAllItems();
+        player.removeAllItems();
         System.out.println("inventory sold for " + inventoryValue + " credits");
         waitForUser();
     }

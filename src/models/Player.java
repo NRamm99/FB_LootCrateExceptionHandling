@@ -79,7 +79,7 @@ public class Player {
                 .sum();
     }
 
-    public void remveAllItems() {
+    public void removeAllItems() {
         items.clear();
     }
 
