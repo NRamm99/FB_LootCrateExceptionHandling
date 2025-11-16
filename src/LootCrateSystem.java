@@ -51,21 +51,12 @@ public class LootCrateSystem {
                 .orElseThrow(() -> new LootCrateNotFoundException(crateId + " not found"));
     }
 
-    public void openCrate(Player player, LootCrate crate) throws NotEnoughCreditsException {
+    public String openCrate(Player player, LootCrate crate) throws NotEnoughCreditsException {
         Item item = crate.getRandomItem();
         int amount = random.nextInt(1, 3);
         player.openCrate(crate, item, amount);
-        System.out.println(
-                player.getUsername() + " opened " + crate.getId() + " and received " + item.getName() + " x " + amount);
-    }
+        return player.getUsername() + " opened " + crate.getId() + " and received " + item.getName() + " x " + amount;
 
-    public void printAllPlayers() {
-        players.forEach(System.out::println);
-    }
-
-    public void printPlayerWithInventory(Player player) {
-        System.out.println(player.getUsername() + " (credits: " + player.getCredits() + ")");
-        player.getItems().forEach(System.out::println);
     }
 
     public void printAllCrates() {

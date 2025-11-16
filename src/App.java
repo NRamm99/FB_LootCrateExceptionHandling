@@ -34,8 +34,9 @@ public class App {
 
         System.out.println("Testing openCrate...");
         try {
-            lootCrateSystem.openCrate(lootCrateSystem.getPlayerByUsername("John"),
+            String result = lootCrateSystem.openCrate(lootCrateSystem.getPlayerByUsername("John"),
                     lootCrateSystem.getLootCrateById("Normal"));
+            System.out.println(result);
         } catch (NotEnoughCreditsException e) {
             System.out.println(e.getMessage());
         }
@@ -43,8 +44,9 @@ public class App {
         System.out.println("--------------------------------");
         System.out.println("Testing openCrate with not enough credits...");
         try {
-            lootCrateSystem.openCrate(lootCrateSystem.getPlayerByUsername("John"),
+            String result = lootCrateSystem.openCrate(lootCrateSystem.getPlayerByUsername("John"),
                     lootCrateSystem.getLootCrateById("Normal"));
+            System.out.println(result);
         } catch (NotEnoughCreditsException e) {
             System.out.println(e.getMessage());
         }
@@ -60,8 +62,9 @@ public class App {
         System.out.println("--------------------------------");
         System.out.println("Testing openCrate with not found player...");
         try {
-            lootCrateSystem.openCrate(lootCrateSystem.getPlayerByUsername("this is not a player"),
+            String result = lootCrateSystem.openCrate(lootCrateSystem.getPlayerByUsername("this is not a player"),
                     lootCrateSystem.getLootCrateById("Normal"));
+            System.out.println(result);
         } catch (PlayerNotFoundException e) {
             System.out.println(e.getMessage());
         }
@@ -128,7 +131,8 @@ public class App {
         clearConsole();
         System.out.println("--------------------------------");
         for (Player player : lootCrateSystem.getPlayers()) {
-            lootCrateSystem.printPlayerWithInventory(player);
+            System.out.println(player.getUsername() + " (credits: " + player.getCredits() + ")");
+            player.getItems().forEach(System.out::println);
             System.out.println("--------------------------------");
         }
     }
@@ -136,7 +140,8 @@ public class App {
     private static void promptOpenCrate()
             throws PlayerNotFoundException, LootCrateNotFoundException, NotEnoughCreditsException {
         clearConsole();
-        lootCrateSystem.printAllPlayers();
+
+        printAllPlayers();
         System.out.println("--------------------------------");
         String username = validateString("Enter the username of the player who will open the crate");
         Player player = null;
@@ -159,8 +164,15 @@ public class App {
             waitForUser();
             return;
         }
-        lootCrateSystem.openCrate(player, crate);
+        String result = lootCrateSystem.openCrate(player, crate);
+        System.out.println(result);
         waitForUser();
+    }
+
+    private static void printAllPlayers() {
+        for (Player player : lootCrateSystem.getPlayers()) {
+            System.out.println(player.getUsername() + " (credits: " + player.getCredits() + ")");
+        }
     }
 
     private static void clearConsole() {
